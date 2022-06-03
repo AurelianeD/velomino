@@ -16,8 +16,6 @@ function AddPlayer(props) {
 }
 
 function PlayerList(props) {
-  console.log(props);
-
   const deleteName = (index) => {
     const newList = props.list;
     newList.splice(index,1);
@@ -38,6 +36,37 @@ function PlayerList(props) {
     </div>
   )
 }
+
+
+function Hide () {
+  const [showContent, setShowContent] = useState(false);
+  const onClick = () => setShowContent(true);
+  const [list] = useState([]);
+
+  return (
+    <div>
+      <button onClick={() => { onClick(); }}>Commencer la partie</button>
+      { showContent ? <div><AddPlayer /><PlayerList /></div> : <CardsPlayer list={list}/> }
+    </div>
+  )
+}
+
+function CardsPlayer (props) {
+  console.log(props.list);
+  return (
+    <div>
+      {
+        props.list.map((a, index) =>
+          <div key={index} className="center">
+            <p>{a}</p>
+          </div>)
+      }
+    </div>
+  )
+}
+
+
+
 function App() {
   const [name,setName] = useState("");
   const [list,setList] = useState([]);
@@ -45,10 +74,10 @@ function App() {
   return (
     <div className="App">
       <div className="logo"></div>
-      <h1>Que la course commence !</h1>
+      <h1>Vélonimo</h1>
       { list.length < 5 ? <AddPlayer name={name} setName={setName} setList={setList} /> : null}
       <PlayerList setList={setList} list={list} />
-      <button>Commencer la partie</button>
+      <Hide list={list} />
     </div>
   )
 }
