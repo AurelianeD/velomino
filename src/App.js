@@ -2,17 +2,21 @@ import './App.css';
 import { useState } from 'react';
 
 function AddPlayer(props) {
+  const [name,setName] = useState("");
+
   const addPlayer = () => {
-    if (props.name !== "") {
-      props.setList((list) => [...list, props.name])
-      props.setName("")
+    if (name !== "") {
+      props.setList((list) => [...list, name])
+      setName("")
     }
   }
 
-  return <div>
-    <input type="text" name="name" placeholder="Name" value={props.name} onChange={(e)=>props.setName(e.target.value)} />
-    <button onClick={addPlayer}>Ajouter un joueur</button>
-  </div>
+  return(
+    <div>
+      <input type="text" name="name" placeholder="Name" value={name} onChange={(e)=>setName(e.target.value)} />
+      <button onClick={addPlayer}>Ajouter un joueur</button>
+    </div>
+  )
 }
 
 function PlayerList(props) {
@@ -38,18 +42,6 @@ function PlayerList(props) {
 }
 
 
-function Hide () {
-  const [showContent, setShowContent] = useState(false);
-  const onClick = () => setShowContent(true);
-  const [list] = useState([]);
-
-  return (
-    <div>
-      <button onClick={() => { onClick(); }}>Commencer la partie</button>
-      { showContent ? <div><AddPlayer /><PlayerList /></div> : <CardsPlayer list={list}/> }
-    </div>
-  )
-}
 
 function CardsPlayer (props) {
   console.log(props.list);
@@ -66,18 +58,37 @@ function CardsPlayer (props) {
 }
 
 
+function PrepareGame(props) {
+  return (
+    <div>
+      { props.list.length < 5 ? <AddPlayer setList={props.setList} /> : null}
+      <PlayerList setList={props.setList} list={props.list} />
+      <button onClick={() => { props.onClick(); }}>Commencer la partie</button>
+    </div>  );
+}
+
+
+function Game(props) {
+  return (
+    <div>
+      <CardsPlayer list={props.list}/>
+    </div>
+  );
+}
+
+
+
 
 function App() {
-  const [name,setName] = useState("");
-  const [list,setList] = useState([]);
+  const [showContent, setShowContent] = useState(true);
+  const onClick = () => setShowContent(false);
+  const [list, setList] = useState([]);
 
   return (
     <div className="App">
       <div className="logo"></div>
       <h1>Vélonimo</h1>
-      { list.length < 5 ? <AddPlayer name={name} setName={setName} setList={setList} /> : null}
-      <PlayerList setList={setList} list={list} />
-      <Hide list={list} />
+      { showContent ? <PrepareGame onClick={onClick} setList={setList} list={list}/> :  <Game list={list} />}
     </div>
   )
 }
