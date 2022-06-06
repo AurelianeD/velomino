@@ -1,5 +1,6 @@
 import './App.css';
-import { useState } from 'react';
+import { createContext, useState } from "react";
+
 
 function AddPlayer(props) {
   const [name,setName] = useState("");
@@ -44,18 +45,24 @@ function PlayerList(props) {
 
 
 function CardsPlayer (props) {
-  console.log(props.list);
+  const [manche, setManche] = useState(1);
+  const [playerScore, setPlayerScore] = useState(0);
+  const score = () => setPlayerScore(props.list.length-1*manche);
+
+  console.log(playerScore);
+
   return (
     <div>
       {
         props.list.map((a, index) =>
           <div key={index} className="center">
-            <p>{a}</p>
+            <button onClick={() => {score(); }}>{a}</button>
           </div>)
       }
     </div>
   )
 }
+
 
 
 function PrepareGame(props) {
@@ -66,6 +73,10 @@ function PrepareGame(props) {
       <button onClick={() => { props.onClick(); }}>Commencer la partie</button>
     </div>  );
 }
+
+
+
+
 
 
 function Game(props) {
@@ -86,8 +97,8 @@ function App() {
 
   return (
     <div className="App">
-      <div className="logo"></div>
       <h1>Vélonimo</h1>
+
       { showContent ? <PrepareGame onClick={onClick} setList={setList} list={list}/> :  <Game list={list} />}
     </div>
   )
