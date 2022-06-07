@@ -1,6 +1,22 @@
 import './App.css';
-import { createContext, useState } from "react";
+import {createContext, useContext, useState} from "react";
 
+const PlayerListContext = createContext(undefined);
+const PlayerListDispatchContext = createContext(undefined);
+
+function PlayerListProvider ({ children }) {
+  const [PlayerListDetails, setPlayerListDetails] = useState({
+    username: "hello",
+  });
+
+  return (
+    <PlayerListContext.Provider value={PlayerListDetails}>
+      <PlayerListDispatchContext.Provider value={setPlayerListDetails}>
+        {children}
+      </PlayerListDispatchContext.Provider>
+    </PlayerListContext.Provider>
+  )
+}
 
 function AddPlayer(props) {
   const [name,setName] = useState("");
@@ -21,6 +37,8 @@ function AddPlayer(props) {
 }
 
 function PlayerList(props) {
+  const PlayerListDetails = useContext(PlayerListContext);
+  const setPlayerListDetails = useContext(PlayerListDispatchContext);
   const deleteName = (index) => {
     const newList = props.list;
     newList.splice(index,1);
@@ -33,6 +51,7 @@ function PlayerList(props) {
         props.list.map((a, index)=>
           <div key={index} className="center">
             <div className="flex">
+              <h1> {PlayerListDetails.username} </h1>
               <span>{a}</span>
               <button onClick={()=>deleteName(index)}>x</button>
             </div>
@@ -52,14 +71,16 @@ function CardsPlayer (props) {
   console.log(playerScore);
 
   return (
-    <div>
-      {
-        props.list.map((a, index) =>
-          <div key={index} className="center">
-            <button onClick={() => {score(); }}>{a}</button>
-          </div>)
-      }
-    </div>
+    <PlayerListProvider>
+      <div>
+        {
+          props.list.map((a, index) =>
+            <div key={index} className="center">
+              <button onClick={() => {score(); }}>{a}</button>
+            </div>)
+        }
+      </div>
+    </PlayerListProvider>
   )
 }
 
@@ -97,9 +118,11 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Vélonimo</h1>
+      <PlayerListProvider>
+        <h1>Vélonimo</h1>
 
-      { showContent ? <PrepareGame onClick={onClick} setList={setList} list={list}/> :  <Game list={list} />}
+        { showContent ? <PrepareGame onClick={onClick} setList={setList} list={list}/> :  <Game list={list} />}
+      </PlayerListProvider>
     </div>
   )
 }
