@@ -2,56 +2,52 @@ import './App.css';
 import {createContext, useContext, useState} from "react";
 
 const PlayerListContext = createContext(undefined);
-const PlayerListDispatchContext = createContext(undefined);
 
 function PlayerListProvider ({ children }) {
-  const [PlayerListDetails, setPlayerListDetails] = useState({
-    username: "hello",
-  });
+
+  const [playerList, setPlayerList] = useState([]);
 
   return (
-    <PlayerListContext.Provider value={PlayerListDetails}>
-      <PlayerListDispatchContext.Provider value={setPlayerListDetails}>
+    <PlayerListContext.Provider value={{playerList, setPlayerList}}>
         {children}
-      </PlayerListDispatchContext.Provider>
     </PlayerListContext.Provider>
   )
 }
 
-function AddPlayer(props) {
+function AddPlayer() {
+
   const [name,setName] = useState("");
+  const {playerList, setPlayerList}  = useContext(PlayerListContext);
 
   const addPlayer = () => {
     if (name !== "") {
-      props.setList((list) => [...list, name])
+      setPlayerList((list) => [...list, name])
       setName("")
     }
-  }
 
+  }
   return(
     <div>
       <input type="text" name="name" placeholder="Name" value={name} onChange={(e)=>setName(e.target.value)} />
       <button onClick={addPlayer}>Ajouter un joueur</button>
     </div>
   )
+
 }
+function PlayerList() {
+  const {playerList, setPlayerList}  = useContext(PlayerListContext);
 
-function PlayerList(props) {
-  const PlayerListDetails = useContext(PlayerListContext);
-  const setPlayerListDetails = useContext(PlayerListDispatchContext);
   const deleteName = (index) => {
-    const newList = props.list;
-    newList.splice(index,1);
-    props.setList((newList) => [...newList])
-  }
+    const newList = playerList.splice(index,1);
+    setPlayerList((list) => [...newList]);
 
+  }
   return (
     <div>
       {
-        props.list.map((a, index)=>
+        playerList.map((a, index)=>
           <div key={index} className="center">
             <div className="flex">
-              <h1> {PlayerListDetails.username} </h1>
               <span>{a}</span>
               <button onClick={()=>deleteName(index)}>x</button>
             </div>
@@ -59,69 +55,75 @@ function PlayerList(props) {
       }
     </div>
   )
+
+
+
 }
-
-
-
 function CardsPlayer (props) {
-  const [manche, setManche] = useState(1);
+  const {playerList, setPlayerList}  = useContext(PlayerListContext);
+
+  const [round, setRound] = useState(1);
+  const [roundList, setRoundList] = useState("");
+  const finalList = () => setRoundList(props.name);
+
   const [playerScore, setPlayerScore] = useState(0);
-  const score = () => setPlayerScore(props.list.length-1*manche);
+  const score = () => setPlayerScore(playerList.length-1*round);
 
   console.log(playerScore);
-
+  console.log(roundList);
   return (
     <PlayerListProvider>
       <div>
         {
-          props.list.map((a, index) =>
+          playerList.map((a, index) =>
             <div key={index} className="center">
-              <button onClick={() => {score(); }}>{a}</button>
+              <button onClick={() => {score(); finalList()}}>{a}</button>
             </div>)
         }
       </div>
     </PlayerListProvider>
   )
+
+
+
 }
-
-
-
 function PrepareGame(props) {
+  const {playerList, setPlayerList}  = useContext(PlayerListContext);
+
   return (
-    <div>
-      { props.list.length < 5 ? <AddPlayer setList={props.setList} /> : null}
-      <PlayerList setList={props.setList} list={props.list} />
+    <>
+      { playerList.length < 5 ? <AddPlayer /> : null}
+      <PlayerList />
       <button onClick={() => { props.onClick(); }}>Commencer la partie</button>
-    </div>  );
+    </>  );
+
+
+
+
+
+
 }
-
-
-
-
-
-
 function Game(props) {
   return (
     <div>
-      <CardsPlayer list={props.list}/>
+      <CardsPlayer />
     </div>
   );
+
+
+
+
 }
-
-
-
-
 function App() {
   const [showContent, setShowContent] = useState(true);
   const onClick = () => setShowContent(false);
-  const [list, setList] = useState([]);
 
   return (
     <div className="App">
       <PlayerListProvider>
         <h1>Vélonimo</h1>
 
-        { showContent ? <PrepareGame onClick={onClick} setList={setList} list={list}/> :  <Game list={list} />}
+        { showContent ? <PrepareGame onClick={onClick} />:  <Game />}
       </PlayerListProvider>
     </div>
   )
