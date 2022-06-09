@@ -38,7 +38,7 @@ function PlayerList() {
   const {playerList, setPlayerList}  = useContext(PlayerListContext);
 
   const deleteName = (index) => {
-    const newList = playerList.splice(index,1);
+    const newList = playerList.splice(index,0);
     setPlayerList((list) => [...newList]);
 
   }
@@ -59,34 +59,6 @@ function PlayerList() {
 
 
 }
-function CardsPlayer (props) {
-  const {playerList, setPlayerList}  = useContext(PlayerListContext);
-
-  const [round, setRound] = useState(1);
-  const [roundList, setRoundList] = useState("");
-  const finalList = () => setRoundList(props.name);
-
-  const [playerScore, setPlayerScore] = useState(0);
-  const score = () => setPlayerScore(playerList.length-1*round);
-
-  console.log(playerScore);
-  console.log(roundList);
-  return (
-    <PlayerListProvider>
-      <div>
-        {
-          playerList.map((a, index) =>
-            <div key={index} className="center">
-              <button onClick={() => {score(); finalList()}}>{a}</button>
-            </div>)
-        }
-      </div>
-    </PlayerListProvider>
-  )
-
-
-
-}
 function PrepareGame(props) {
   const {playerList, setPlayerList}  = useContext(PlayerListContext);
 
@@ -96,24 +68,74 @@ function PrepareGame(props) {
       <PlayerList />
       <button onClick={() => { props.onClick(); }}>Commencer la partie</button>
     </>  );
-
-
-
-
-
-
 }
+
+
 function Game(props) {
+  const [roundList, setRoundList] = useState([]);
+  const [playerScore, setPlayerScore] = useState(0);
+
   return (
-    <div>
-      <CardsPlayer />
-    </div>
+    <>
+      <CardsPlayer roundList={roundList} setRoundList={setRoundList} playerScore={playerScore} setPlayerScore={setPlayerScore} onClick={props.onClick}/>
+      {props.showContent ? null : <ScoreTable roundList={roundList} setRoundList={setRoundList} playerScore={playerScore} setPlayerScore={setPlayerScore}/> }
+    </>
   );
-
-
-
-
 }
+
+function CardsPlayer (props) {
+  const {playerList, setPlayerList}  = useContext(PlayerListContext);
+
+  const [roundCounter, setRoundCounter] = useState(1);
+
+  const finalList = (index) => {
+    // TODO: Apprendre a acceder a un element d'une liste, comme ceci
+    const playerAtIndex = playerList[index]
+    // Not a function ici vvvvv
+    const newList = playerList(index,0)
+    // TODO: Ajouter le joueur qu'on vient de cliquer dans la liste d'arrivée
+    // Actuellement tu remplace la liste de joueurs par newList, est-ce que c'est vraiment ce que tu veux faire?
+    setPlayerList((list) => [...newList])
+  }
+
+  // Tu as plus qu'un seul joueur, tu ne peut pas y arriver comme ça.
+  const score = () => props.setPlayerScore((playerList.length-1)*roundCounter);
+
+  return (
+      <>
+        {
+          // Tu peux arreter d'utiliser `a` comme non de variable ?
+          playerList.map((a, index) =>
+            <div key={index} className="center">
+              <button onClick={() => {score(); finalList(); props.onClick();}}>{a}</button>
+            </div>)
+        }
+      </>
+  )
+}
+
+function ScoreTable (props) {
+  return (
+      <>
+        {
+          props.roundList.map((a, index) =>
+            <div key={index} className="center">
+              {/* Ta façon de faire une liste est éronée, tu est en train de créer `props.roundList.length` ul.
+              Alors que tu souhaites avoir un ul et `props.roundList.length` li */}
+              <ul>
+                <li>
+                  {a}
+                </li>
+              </ul>
+            </div>
+          )
+        }
+      </>
+  )
+}
+
+
+
 function App() {
   const [showContent, setShowContent] = useState(true);
   const onClick = () => setShowContent(false);
@@ -123,7 +145,7 @@ function App() {
       <PlayerListProvider>
         <h1>Vélonimo</h1>
 
-        { showContent ? <PrepareGame onClick={onClick} />:  <Game />}
+        { showContent ? <PrepareGame onClick={onClick} />:  <Game onClick={onClick} showContent={showContent} />}
       </PlayerListProvider>
     </div>
   )
