@@ -1,11 +1,12 @@
 import './App.css';
 import {createContext, useContext, useState} from "react";
+import {isDisabled} from "@testing-library/user-event/dist/utils";
 
 const PlayerListContext = createContext(undefined);
 
 function PlayerListProvider ({ children }) {
 
-  const [playerList, setPlayerList] = useState([]);
+  const [playerList, setPlayerList] = useState(['toto', 'tata', 'tutu']);
 
   return (
     <PlayerListContext.Provider value={{playerList, setPlayerList}}>
@@ -38,17 +39,18 @@ function PlayerList() {
   const {playerList, setPlayerList}  = useContext(PlayerListContext);
 
   const deleteName = (index) => {
-    const newList = playerList.splice(index,0);
+    const newList = playerList;
+    newList.splice(index,1);
     setPlayerList((list) => [...newList]);
-
   }
+
   return (
     <div>
       {
-        playerList.map((a, index)=>
+        playerList.map((playerName, index)=>
           <div key={index} className="center">
             <div className="flex">
-              <span>{a}</span>
+              <span>{playerName}</span>
               <button onClick={()=>deleteName(index)}>x</button>
             </div>
           </div>)
@@ -72,61 +74,35 @@ function PrepareGame(props) {
 
 
 function Game(props) {
-  const [roundList, setRoundList] = useState([]);
   const [playerScore, setPlayerScore] = useState(0);
+  const [arrivedPlayers, setArrivedPlayers] = useState([]);
 
   return (
     <>
-      <CardsPlayer roundList={roundList} setRoundList={setRoundList} playerScore={playerScore} setPlayerScore={setPlayerScore} onClick={props.onClick}/>
-      {props.showContent ? null : <ScoreTable roundList={roundList} setRoundList={setRoundList} playerScore={playerScore} setPlayerScore={setPlayerScore}/> }
+      <CardsPlayer onClick={props.onClick} arrivedPlayers={{arrivedPlayers, setArrivedPlayers}}/>
+      <ScoreTable arrivedPlayers={{arrivedPlayers, setArrivedPlayers}}/>
     </>
   );
 }
 
-function CardsPlayer (props) {
+function CardsPlayer(props) {
   const {playerList, setPlayerList}  = useContext(PlayerListContext);
+  const {arrivedPlayers, setArrivedPlayers} = props.arrivedPlayers
+  console.log(arrivedPlayers);
 
-  const [roundCounter, setRoundCounter] = useState(1);
-
-  const finalList = (index) => {
-    // TODO: Apprendre a acceder a un element d'une liste, comme ceci
+  //cette fonction ajoute l'index du joueur dans une liste par ordre d'arrivé
+  function FinalList(index) {
     const playerAtIndex = playerList[index]
-    // Not a function ici vvvvv
-    const newList = playerList(index,0)
-    // TODO: Ajouter le joueur qu'on vient de cliquer dans la liste d'arrivée
-    // Actuellement tu remplace la liste de joueurs par newList, est-ce que c'est vraiment ce que tu veux faire?
-    setPlayerList((list) => [...newList])
+    setArrivedPlayers(function toto (list) {return [...list, playerAtIndex]})
   }
 
-  // Tu as plus qu'un seul joueur, tu ne peut pas y arriver comme ça.
-  const score = () => props.setPlayerScore((playerList.length-1)*roundCounter);
 
   return (
       <>
         {
-          // Tu peux arreter d'utiliser `a` comme non de variable ?
-          playerList.map((a, index) =>
+          playerList.map((playerName, index) =>
             <div key={index} className="center">
-              <button onClick={() => {score(); finalList(); props.onClick();}}>{a}</button>
-            </div>)
-        }
-      </>
-  )
-}
-
-function ScoreTable (props) {
-  return (
-      <>
-        {
-          props.roundList.map((a, index) =>
-            <div key={index} className="center">
-              {/* Ta façon de faire une liste est éronée, tu est en train de créer `props.roundList.length` ul.
-              Alors que tu souhaites avoir un ul et `props.roundList.length` li */}
-              <ul>
-                <li>
-                  {a}
-                </li>
-              </ul>
+              <button disabled={arrivedPlayers.indexOf(playerName) !== -1} onClick={() => {FinalList(index); props.onClick(); }}>{playerName}</button>
             </div>
           )
         }
@@ -134,6 +110,22 @@ function ScoreTable (props) {
   )
 }
 
+function ScoreTable (props) {
+  const {arrivedPlayers, setArrivedPlayers} = props.arrivedPlayers
+
+  return (
+    <div>
+      {
+        arrivedPlayers.map((playerName, index)=>
+          <div key={index} className="center">
+            <div className="flex">
+              <span>{playerName}</span>
+            </div>
+          </div>)
+      }
+    </div>
+  )
+}
 
 
 function App() {
