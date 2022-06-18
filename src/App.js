@@ -1,12 +1,29 @@
 import './App.css';
-import {createContext, useContext, useState} from "react";
+import {createContext, useContext, useState, useEffect} from "react";
 import {isDisabled} from "@testing-library/user-event/dist/utils";
 
-const PlayerListContext = createContext(undefined);
+const PlayerListContext = createContext([undefined]);
 
+// Variable local pour stocker la liste des joueurs
+const LOCAL_STORAGE_KEY = "player-list";
+
+// Provider qui permet d'acceder à la liste des joueurs dans tous les components sans les passer dans des props
 function PlayerListProvider ({ children }) {
 
-  const [playerList, setPlayerList] = useState(['toto', 'tata', 'tutu']);
+  const [playerList, setPlayerList] = useState([]);
+
+  //Stocker la liste des joueurs dans variable local LOCAL_STORAGE_KEY
+
+  useEffect(() => {
+    const storagePlayerList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    if (storagePlayerList) {
+      setPlayerList(storagePlayerList);
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(playerList));
+  }, [playerList])
 
   return (
     <PlayerListContext.Provider value={{playerList, setPlayerList}}>
@@ -15,14 +32,14 @@ function PlayerListProvider ({ children }) {
   )
 }
 
-function AddPlayer() {
+function AddPlayer(props) {
 
-  const [name,setName] = useState("");
+  const [name, setName] = useState("");
   const {playerList, setPlayerList}  = useContext(PlayerListContext);
 
   const addPlayer = () => {
     if (name !== "") {
-      setPlayerList((list) => [...list, name])
+      setPlayerList((list) => [...list, {name, score: 0}])
       setName("")
     }
 
@@ -38,6 +55,10 @@ function AddPlayer() {
 function PlayerList() {
   const {playerList, setPlayerList}  = useContext(PlayerListContext);
 
+
+
+  // Supprimer un joueur de la liste
+
   const deleteName = (index) => {
     const newList = playerList;
     newList.splice(index,1);
@@ -47,10 +68,10 @@ function PlayerList() {
   return (
     <div>
       {
-        playerList.map((playerName, index)=>
+        playerList.map((player, index)=>
           <div key={index} className="center">
             <div className="flex">
-              <span>{playerName}</span>
+              <span>{player.name}</span>
               <button onClick={()=>deleteName(index)}>x</button>
             </div>
           </div>)
@@ -64,6 +85,7 @@ function PlayerList() {
 function PrepareGame(props) {
   const {playerList, setPlayerList}  = useContext(PlayerListContext);
 
+
   return (
     <>
       { playerList.length < 5 ? <AddPlayer /> : null}
@@ -74,35 +96,54 @@ function PrepareGame(props) {
 
 
 function Game(props) {
-  const [playerScore, setPlayerScore] = useState(0);
   const [arrivedPlayers, setArrivedPlayers] = useState([]);
+  const[round, setRound] = useState(2);
+
 
   return (
     <>
-      <CardsPlayer onClick={props.onClick} arrivedPlayers={{arrivedPlayers, setArrivedPlayers}}/>
-      <ScoreTable arrivedPlayers={{arrivedPlayers, setArrivedPlayers}}/>
+      <CardsPlayer onClick={props.onClick} arrivedPlayers={{arrivedPlayers, setArrivedPlayers}} round={{round, setRound}}/>
+      <ScoreTable arrivedPlayers={{arrivedPlayers, setArrivedPlayers}} round={{round, setRound}}/>
     </>
   );
 }
 
 function CardsPlayer(props) {
-  const {playerList, setPlayerList}  = useContext(PlayerListContext);
   const {arrivedPlayers, setArrivedPlayers} = props.arrivedPlayers
-  console.log(arrivedPlayers);
+  const {playerList, setPlayerList}  = useContext(PlayerListContext);
+
 
   //cette fonction ajoute l'index du joueur dans une liste par ordre d'arrivé
   function FinalList(index) {
     const playerAtIndex = playerList[index]
-    setArrivedPlayers(function toto (list) {return [...list, playerAtIndex]})
-  }
+    playerAtIndex.score += ((playerList.length - arrivedPlayers.length) * props.round.round)
+
+    setArrivedPlayers(function index (arrivedPlayerList) {return [...arrivedPlayerList, playerAtIndex]})
+
+
+    setPlayerList(function score(playerScore) {
+      playerScore[index] = playerAtIndex
+      return [...playerScore]
+    })
+
+    }
 
 
   return (
       <>
         {
-          playerList.map((playerName, index) =>
+          playerList.map(
+            (player, index) =>
             <div key={index} className="center">
-              <button disabled={arrivedPlayers.indexOf(playerName) !== -1} onClick={() => {FinalList(index); props.onClick(); }}>{playerName}</button>
+              <button disabled={arrivedPlayers.indexOf(player) !== -1}
+                      onClick={() =>
+                      {FinalList(index);
+                        props.onClick();
+                      }
+              }
+              >
+                {player.name}
+              </button>
             </div>
           )
         }
@@ -111,16 +152,27 @@ function CardsPlayer(props) {
 }
 
 function ScoreTable (props) {
-  const {arrivedPlayers, setArrivedPlayers} = props.arrivedPlayers
+  const {arrivedPlayers, setArrivedPlayers} = props.arrivedPlayers;
 
+  function incrementRound () {
+    props.round.setRound(function round(round) {
+    return (
+      props.round.round + 1
+    )
+    })
+  }
+
+  console.log(props.round.round);
   return (
     <div>
       {
-        arrivedPlayers.map((playerName, index)=>
+        arrivedPlayers.map((player, index)=>
           <div key={index} className="center">
             <div className="flex">
-              <span>{playerName}</span>
+              <span>{player.name}</span>
+              <span>{player.score}</span>
             </div>
+            <button onClick={incrementRound}>Terminer la manche</button>
           </div>)
       }
     </div>
