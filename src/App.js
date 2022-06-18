@@ -115,17 +115,11 @@ function CardsPlayer(props) {
 
   //cette fonction ajoute l'index du joueur dans une liste par ordre d'arrivé
   function FinalList(index) {
-    const playerAtIndex = playerList[index]
-    playerAtIndex.score += ((playerList.length - arrivedPlayers.length) * props.round.round)
+    playerList[index].score += ((playerList.length - arrivedPlayers.length) * props.round.round)
 
-    setArrivedPlayers(function index (arrivedPlayerList) {return [...arrivedPlayerList, playerAtIndex]})
+    setArrivedPlayers([...arrivedPlayers, playerList[index]])
 
-
-    setPlayerList(function score(playerScore) {
-      playerScore[index] = playerAtIndex
-      return [...playerScore]
-    })
-
+    setPlayerList(playerList)
     }
 
 
@@ -155,11 +149,8 @@ function ScoreTable (props) {
   const {arrivedPlayers, setArrivedPlayers} = props.arrivedPlayers;
 
   function incrementRound () {
-    props.round.setRound(function round(round) {
-    return (
-      props.round.round + 1
-    )
-    })
+    props.round.setRound(props.round.round +1)
+    setArrivedPlayers([])
   }
 
   console.log(props.round.round);
@@ -172,9 +163,9 @@ function ScoreTable (props) {
               <span>{player.name}</span>
               <span>{player.score}</span>
             </div>
-            <button onClick={incrementRound}>Terminer la manche</button>
           </div>)
       }
+      <button onClick={incrementRound}>Terminer la manche</button>
     </div>
   )
 }
