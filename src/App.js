@@ -1,28 +1,24 @@
 import './App.css';
-import {createContext, useContext, useState, useEffect} from "react";
+import {createContext, useContext, useState, useEffect, useCallback} from "react";
 
 const PlayerListContext = createContext([undefined]);
-
-// Variable local pour stocker la liste des joueurs
-const LOCAL_STORAGE_KEY = "player-list";
 
 // Provider qui permet d'acceder à la liste des joueurs dans tous les components sans les passer dans des props
 function PlayerListProvider({children}) {
 
 	const [playerList, setPlayerList] = useState([]);
 
-	//Stocker la liste des joueurs dans variable local LOCAL_STORAGE_KEY
-
 	useEffect(() => {
-		const storagePlayerList = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-		if (storagePlayerList) {
-			setPlayerList(storagePlayerList);
+		localStorage.setItem("playerList", JSON.stringify(playerList));
+	}, [playerList]);
+
+	const playerListStorage = useCallback(() => {
+		JSON.parse(localStorage.getItem("playerList"));
+		if (playerListStorage) {
+			setPlayerList(playerListStorage);
 		}
-	}, [])
+	}, [playerList]);
 
-	useEffect(() => {
-		localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(playerList));
-	}, [playerList])
 
 	return (
 		<PlayerListContext.Provider value={{playerList, setPlayerList}}>
@@ -100,26 +96,32 @@ function Game(props) {
 	const [arrivedPlayers, setArrivedPlayers] = useState([]);
 	const [round, setRound] = useState(1);
 	const [count, setCount] = useState(0);
-	const hightScrore = Math.max(...playerList.map(player => player.score));
 
+	function compareNumbers(a, b) {
+		return a - b;
+	}
 
 	if (count === 3) {
 		return (
 			<>
-				{playerList.map((player, score) =>
-					<div key={score} className="center">
-						{hightScrore === player.score ?
-							<div className="flex">
-								<img src={require("./assets/carrot.png")} alt="carrot" className="carrot"/>
-								<p>{player.name}</p>
-								<p>{player.score}</p>
+				{playerList.sort((compareNumbers, index, player) => {
+						const hightScore = Math.max(...playerList.map(player => player.score));
+						return (
+							<div key={index} className="center">
+								{hightScore === player.score ?
+									<div className="flex">
+										<img src={require("./assets/crown.png")} alt="carrot" className="carrot"/>
+										<p>{player.name}</p>
+										<p>{player.score}</p>
+									</div>
+									:
+									<div className="flex">
+										<p>{player.name}</p>
+										<p>{player.score}</p>
+									</div>}
 							</div>
-							:
-							<div className="flex">
-								<p>{player.name}</p>
-								<p>{player.score}</p>
-							</div>}
-					</div>
+						)
+					}
 				)}
 				<button onClick={() => {
 					setArrivedPlayers([]);
@@ -128,6 +130,7 @@ function Game(props) {
 					setPlayerList(
 						playerList.map((player) => {
 							player.score = 0
+							return player;
 						}))
 				}}
 				>Recommencer la partie
@@ -195,6 +198,7 @@ function ScoreTable(props) {
 	const {arrivedPlayers, setArrivedPlayers} = props.arrivedPlayers;
 	const {round, setRound} = props.round;
 	const {count, setCount} = props.count;
+	;
 
 	function incrementRound() {
 		setRound(round + 1)
@@ -205,13 +209,24 @@ function ScoreTable(props) {
 	return (
 		<div>
 			{
-				arrivedPlayers.map((player, index) =>
-					<div key={index} className="center">
-						<div className="flex">
-							<span>{player.name}</span>
-							<span>{player.score}</span>
+				arrivedPlayers.map((player, index) => {
+					const firstArrivedPlayer = arrivedPlayers.indexOf(player) === 0;
+					return (
+						<div key={index} className="center">
+							{firstArrivedPlayer ?
+								<div className="flex">
+									<img src={require("./assets/carrot.png")} alt="carrot" className="carrot"/>
+									<p>{player.name}</p>
+									<p>{player.score}</p>
+								</div>
+								:
+								<div className="flex">
+									<p>{player.name}</p>
+									<p>{player.score}</p>
+								</div>}
 						</div>
-					</div>)
+					)
+				})
 			}
 			<button onClick={incrementRound}
 							disabled={playerList.length !== arrivedPlayers.length}
@@ -225,7 +240,7 @@ function ScoreTable(props) {
 function App() {
 	const [showContent, setShowContent] = useState(true);
 	const show = () => setShowContent(false);
-	console.log(showContent)
+
 
 	return (
 		<div className="App">
