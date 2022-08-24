@@ -9,22 +9,7 @@ const LOCAL_STORAGE_KEY = "player-list";
 // Provider qui permet d'acceder à la liste des joueurs dans tous les components sans les passer dans des props
 function PlayerListProvider({children}) {
 
-	const [playerList, setPlayerList] = useState([{
-		name: "aureliane",
-		score: 0
-	}, {
-		name: "clement",
-		score: 0
-	}, {
-		name: "toto",
-		score: 0
-	}, {
-		name: "pepette",
-		score: 0
-	}, {
-		name: "jon",
-		score: 0
-	}]);
+	const [playerList, setPlayerList] = useState([]);
 
 	//Stocker la liste des joueurs dans variable local LOCAL_STORAGE_KEY
 
@@ -115,26 +100,58 @@ function Game(props) {
 	const [arrivedPlayers, setArrivedPlayers] = useState([]);
 	const [round, setRound] = useState(1);
 	const [count, setCount] = useState(0);
+	const hightScrore = Math.max(...playerList.map(player => player.score));
 
 
-	return (
-		<>
-			{count === 3 ? playerList.map((player, score) =>
+	if (count === 3) {
+		return (
+			<>
+				{playerList.map((player, score) =>
 					<div key={score} className="center">
-						<div className="flex">
-							<p>{player.name}</p>
-							<p>{player.score}</p>
-						</div>
+						{hightScrore === player.score ?
+							<div className="flex">
+								<img src={require("./assets/carrot.png")} alt="carrot" className="carrot"/>
+								<p>{player.name}</p>
+								<p>{player.score}</p>
+							</div>
+							:
+							<div className="flex">
+								<p>{player.name}</p>
+								<p>{player.score}</p>
+							</div>}
 					</div>
-				) :
-				<div>
-					<CardsPlayer onClick={props.onClick} arrivedPlayers={{arrivedPlayers, setArrivedPlayers}}
-											 round={{round, setRound}}/>
-					<ScoreTable arrivedPlayers={{arrivedPlayers, setArrivedPlayers}} round={{round, setRound}}
-											count={{count, setCount}}/>
-				</div>
-			}
-		</>
+				)}
+				<button onClick={() => {
+					setArrivedPlayers([]);
+					setRound(1);
+					setCount(0);
+					setPlayerList(
+						playerList.map((player) => {
+							player.score = 0
+						}))
+				}}
+				>Recommencer la partie
+				</button>
+
+				<button onClick={() => {
+					setPlayerList([]);
+					setArrivedPlayers([]);
+					setRound(1);
+					setCount(0);
+					props.setShowContent(true);
+				}}>
+					Quitter la partie
+				</button>
+			</>
+		)
+	}
+	return (
+		<div>
+			<CardsPlayer onClick={props.onClick} arrivedPlayers={{arrivedPlayers, setArrivedPlayers}}
+									 round={{round, setRound}}/>
+			<ScoreTable arrivedPlayers={{arrivedPlayers, setArrivedPlayers}} round={{round, setRound}}
+									count={{count, setCount}}/>
+		</div>
 	)
 }
 
@@ -163,9 +180,7 @@ function CardsPlayer(props) {
 											onClick={() => {
 												FinalList(index);
 												props.onClick();
-											}
-											}
-							>
+											}}>
 								{player.name}
 							</button>
 						</div>
@@ -210,13 +225,18 @@ function ScoreTable(props) {
 function App() {
 	const [showContent, setShowContent] = useState(true);
 	const show = () => setShowContent(false);
+	console.log(showContent)
 
 	return (
 		<div className="App">
 			<PlayerListProvider>
 				<h1>Vélonimo</h1>
 
-				{showContent ? <PrepareGame onClick={show}/> : <Game onClick={show} showContent={showContent}/>}
+				{
+					showContent ?
+						<PrepareGame onClick={show}/> :
+						<Game onClick={show} setShowContent={setShowContent}/>
+				}
 			</PlayerListProvider>
 		</div>
 	)
