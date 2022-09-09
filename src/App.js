@@ -1,12 +1,16 @@
 import './App.css';
-import {createContext, useContext, useState, useEffect, useCallback} from "react";
+import {createContext, useCallback, useContext, useEffect, useState} from "react";
 
 const PlayerListContext = createContext([undefined]);
 
 // Provider qui permet d'acceder à la liste des joueurs dans tous les components sans les passer dans des props
 function PlayerListProvider({children}) {
 
-	const [playerList, setPlayerList] = useState([]);
+	const [playerList, setPlayerList] = useState([
+		{name: "Joueur 1", score: 0},
+		{name: "Joueur 2", score: 0},
+		{name: "Joueur 3", score: 0},
+	]);
 
 	useEffect(() => {
 		localStorage.setItem("playerList", JSON.stringify(playerList));
@@ -97,17 +101,15 @@ function Game(props) {
 	const [round, setRound] = useState(1);
 	const [count, setCount] = useState(0);
 
-	function compareNumbers(a, b) {
-		return a - b;
-	}
 
 	if (count === 3) {
+		playerList.sort((a, b) => b.score - a.score)
 		return (
 			<>
-				{playerList.sort((compareNumbers, index, player) => {
+				{playerList.map((player, index) => {
 						const hightScore = Math.max(...playerList.map(player => player.score));
 						return (
-							<div key={index} className="center">
+							<div key={player.score} className="center">
 								{hightScore === player.score ?
 									<div className="flex">
 										<img src={require("./assets/crown.png")} alt="carrot" className="carrot"/>
