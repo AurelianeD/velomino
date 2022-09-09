@@ -6,11 +6,7 @@ const PlayerListContext = createContext([undefined]);
 // Provider qui permet d'acceder à la liste des joueurs dans tous les components sans les passer dans des props
 function PlayerListProvider({children}) {
 
-	const [playerList, setPlayerList] = useState([
-		{name: "Joueur 1", score: 0},
-		{name: "Joueur 2", score: 0},
-		{name: "Joueur 3", score: 0},
-	]);
+	const [playerList, setPlayerList] = useState([]);
 
 	useEffect(() => {
 		localStorage.setItem("playerList", JSON.stringify(playerList));
