@@ -40,9 +40,11 @@ function AddPlayer(props) {
 
 	}
 	return (
-		<div>
-			<input type="text" name="name" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)}/>
-			<button onClick={addPlayer}>Ajouter un joueur</button>
+		<div className='center'>
+			<div className='flex'>
+				<input type="text" name="name" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)}/>
+				<button onClick={addPlayer}>Ajouter un joueur</button>
+			</div>
 		</div>
 	)
 
@@ -83,10 +85,12 @@ function PrepareGame(props) {
 		<>
 			{playerList.length < 5 ? <AddPlayer/> : null}
 			<PlayerList/>
+
 			<button onClick={() => {
 				props.onClick();
 			}}>Commencer la partie
 			</button>
+
 		</>);
 }
 
@@ -110,39 +114,41 @@ function Game(props) {
 									<div className="flex">
 										<img src={require("./assets/crown.png")} alt="carrot" className="carrot"/>
 										<p>{player.name}</p>
-										<p>{player.score}</p>
+										<p className='score'>{player.score}</p>
 									</div>
 									:
 									<div className="flex">
 										<p>{player.name}</p>
-										<p>{player.score}</p>
+										<p className='score'>{player.score}</p>
 									</div>}
 							</div>
 						)
 					}
 				)}
-				<button onClick={() => {
-					setArrivedPlayers([]);
-					setRound(1);
-					setCount(0);
-					setPlayerList(
-						playerList.map((player) => {
-							player.score = 0
-							return player;
-						}))
-				}}
-				>Recommencer la partie
-				</button>
+				<div className='flex'>
+					<button onClick={() => {
+						setArrivedPlayers([]);
+						setRound(1);
+						setCount(0);
+						setPlayerList(
+							playerList.map((player) => {
+								player.score = 0
+								return player;
+							}))
+					}}
+					>Recommencer la partie
+					</button>
 
-				<button onClick={() => {
-					setPlayerList([]);
-					setArrivedPlayers([]);
-					setRound(1);
-					setCount(0);
-					props.setShowContent(true);
-				}}>
-					Quitter la partie
-				</button>
+					<button onClick={() => {
+						setPlayerList([]);
+						setArrivedPlayers([]);
+						setRound(1);
+						setCount(0);
+						props.setShowContent(true);
+					}}>
+						Quitter la partie
+					</button>
+				</div>
 			</>
 		)
 	}
@@ -176,7 +182,7 @@ function CardsPlayer(props) {
 			{
 				playerList.map(
 					(player, index) =>
-						<div key={index} className="center">
+						<div key={index} className="center padding-b-2">
 							<button disabled={arrivedPlayers.indexOf(player) !== -1}
 											onClick={() => {
 												FinalList(index);
@@ -215,12 +221,12 @@ function ScoreTable(props) {
 								<div className="flex">
 									<img src={require("./assets/carrot.png")} alt="carrot" className="carrot"/>
 									<p>{player.name}</p>
-									<p>{player.score}</p>
+									<p className='score'>{player.score}</p>
 								</div>
 								:
 								<div className="flex">
 									<p>{player.name}</p>
-									<p>{player.score}</p>
+									<p className='score'>{player.score}</p>
 								</div>}
 						</div>
 					)
