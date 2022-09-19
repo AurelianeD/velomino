@@ -1,23 +1,12 @@
 import './App.css';
-import {createContext, useCallback, useContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
+import useLocalStorage from "./hooks/useLocalStorage";
 
-const PlayerListContext = createContext([undefined]);
+const PlayerListContext = createContext([]);
 
-// Provider qui permet d'acceder à la liste des joueurs dans tous les components sans les passer dans des props
 function PlayerListProvider({children}) {
 
-	const [playerList, setPlayerList] = useState([]);
-
-	useEffect(() => {
-		localStorage.setItem("playerList", JSON.stringify(playerList));
-	}, [playerList]);
-
-	const playerListStorage = useCallback(() => {
-		JSON.parse(localStorage.getItem("playerList"));
-		if (playerListStorage) {
-			setPlayerList(playerListStorage);
-		}
-	}, [playerList]);
+	const [playerList, setPlayerList] = useLocalStorage(["playerList"], []);
 
 
 	return (
@@ -102,7 +91,7 @@ function Game(props) {
 	const [count, setCount] = useState(0);
 
 
-	if (count === 3) {
+	if (count === 5) {
 		playerList.sort((a, b) => b.score - a.score)
 		return (
 			<>
@@ -172,8 +161,8 @@ function CardsPlayer(props) {
 		playerList[index].score += ((playerList.length - arrivedPlayers.length) * props.round.round)
 
 		setArrivedPlayers([...arrivedPlayers, playerList[index]])
-
 		setPlayerList(playerList)
+
 	}
 
 
