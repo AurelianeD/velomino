@@ -12,8 +12,7 @@ function App() {
 	return (
 		<div className="bg-sand grid justify-center content-center text-center w-screen h-screen">
 			<PlayerListProvider>
-
-				<h1 className='mb-20 font-bold text-5xl'>Vélonimo</h1>
+				<h1 className='mt-3 font-bold text-5xl'>Vélonimo</h1>
 				{
 					showContent ?
 						<div>
@@ -25,7 +24,7 @@ function App() {
 						<div>
 
 							<h2 className='text-purple pb-5'>Que la course commence !</h2>
-							<div className='container'>
+							<div>
 								<Game onClick={show} setShowContent={setShowContent}/>
 							</div>
 						</div>

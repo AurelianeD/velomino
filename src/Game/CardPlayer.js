@@ -14,22 +14,24 @@ function CardsPlayer(props) {
 	}
 
 	return (
-		<>
+		<div className="grid grid-cols-5 gap-4 mb-5">
 			{
 				playerList.map(
 					(player, index) =>
-						<div key={index} className="center padding-b-2">
-							<button disabled={arrivedPlayers.indexOf(player) !== -1}
-											onClick={() => {
-												FinalList(index);
-												props.onClick();
-											}}>
+						<div key={index}>
+							<button
+								className='bg-purple rounded-xl text-white py-2.5 px-2.5 mb-2 disabled:opacity-50'
+								disabled={arrivedPlayers.indexOf(player) !== -1}
+								onClick={() => {
+									FinalList(index);
+									props.onClick();
+								}}>
 								{player.name}
 							</button>
 						</div>
 				)
 			}
-		</>
+		</div>
 	)
 }
 

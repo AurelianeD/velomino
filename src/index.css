@@ -2,25 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-
-li {
-    list-style: none;
-}
-
-.carrot {
-    width: 30px;
-    height: 30px;
-}
-
-.gap {
-    gap: 2rem;
-}
-
-.padding-b-2 {
-    padding-bottom: 2rem;
-}
-
-.score {
-    font-weight: bold;
-}
-

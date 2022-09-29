@@ -15,7 +15,7 @@ function AddPlayer() {
 	}
 	return (
 		<div className=''>
-			<div className='flex gap-5 pb-5'>
+			<div className='flex gap-5 pb-5 justify-center content-center'>
 				<input className=' py-4 px-2.5 rounded-xl bg-white placeholder-black' type="text" name="name"
 							 placeholder="Entrez votre nom"
 							 value={name}
