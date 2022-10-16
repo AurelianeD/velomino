@@ -14,15 +14,20 @@ function AddPlayer() {
 
 	}
 	return (
-		<div className=''>
-			<div className='flex gap-5 pb-5 justify-center content-center'>
-				<input className=' py-4 px-2.5 rounded-xl bg-white placeholder-black' type="text" name="name"
+		<>
+			<div className='flex gap-5 mb-10 justify-center content-center'>
+				<input className=' py-2 pl-4 pr-2 rounded-full bg-white placeholder-gray-400 focus:outline-purpleDark'
+							 type="text"
+							 name="name"
 							 placeholder="Entrez votre nom"
 							 value={name}
 							 onChange={(e) => setName(e.target.value)}/>
-				<button className='bg-purple rounded-xl text-white py-4 px-2.5' onClick={addPlayer}>Ajouter un joueur</button>
+				<button className='bg-purple rounded-full text-white py-1 px-4 text-base'
+								onClick={addPlayer}>
+					+
+				</button>
 			</div>
-		</div>
+		</>
 	)
 }
 

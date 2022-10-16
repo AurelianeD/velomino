@@ -7,14 +7,14 @@ function PrepareGame(props) {
 	const {playerList, setPlayerList} = useContext(PlayerListContext);
 
 	return (
-		<div>
+		<div className=''>
 			{playerList.length < 5 ? <AddPlayer/> : null}
-			<PlayerList/>
+			<div
+				// className='grid grid-rows-5 lg:grid-col-5 gap-4'
+			>
+				<PlayerList/>
+			</div>
 
-			<button className='bg-purple rounded-xl text-white py-4 px-2.5 mt-32 hover:bg-purpleDark' onClick={() => {
-				props.onClick();
-			}}>Commencer la partie
-			</button>
 		</div>);
 }
 

@@ -10,27 +10,46 @@ function App() {
 
 
 	return (
-		<div className="bg-sand grid justify-center content-center text-center w-screen h-screen">
+		<>
 			<PlayerListProvider>
-				<h1 className='mt-3 font-bold text-5xl'>Vélonimo</h1>
-				{
-					showContent ?
-						<div>
-							<h2 className='text-purple pb-5'>Les équipes se mettent en place...</h2>
-							<div className='pb-20 px-40'>
-								<PrepareGame onClick={show}/>
-							</div>
-						</div> :
-						<div>
-
-							<h2 className='text-purple pb-5'>Que la course commence !</h2>
-							<div>
+				<div className="static flex flex-col gap-4 bg-sand text-center w-screen h-screen pt-10 px-3">
+					<div className=''>
+						<h1 className='font-bold text-5xl mb-10'>Vélonimo</h1>
+						<h2
+							className='text-purple'>
+							{showContent ?
+								'Les équipes se mettent en place...'
+								: 'Que le course commence !'}
+						</h2>
+					</div>
+					{
+						showContent ?
+							<>
+								<PrepareGame/>
+							</>
+							:
+							<>
 								<Game onClick={show} setShowContent={setShowContent}/>
-							</div>
-						</div>
-				}
+							</>
+					}
+				</div>
+				<button
+					className='
+						fixed
+						bottom-10
+						left-10
+						right-10
+						bg-purple
+						rounded-xl
+						text-white
+						py-2
+						px-2
+						hover:bg-purpleDark'
+					onClick={show}>
+					Commencer la partie
+				</button>
 			</PlayerListProvider>
-		</div>
+		</>
 	)
 }
 

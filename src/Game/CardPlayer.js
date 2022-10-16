@@ -14,7 +14,7 @@ function CardsPlayer(props) {
 	}
 
 	return (
-		<div className="grid grid-cols-5 gap-4 mb-5">
+		<div className='grid grid-cols-5 gap-4 mb-5'>
 			{
 				playerList.map(
 					(player, index) =>
