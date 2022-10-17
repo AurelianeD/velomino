@@ -14,15 +14,15 @@ function PlayerList() {
 
 	return (
 		<div
-			className='flex flex-col mx-10 gap-4 md:flex-row justify-center content-center '>
+			className='flex flex-col mx-20 mt-10 gap-4 md:flex-row justify-center content-center '>
 
 			{
 				playerList.map((player, index) =>
 					<div key={index}>
-						<div className='bg-white rounded-xl p-5 relative'>
+						<div className='bg-white rounded-xl p-5 relative shadow-md'>
 							<p className='px-5 uppercase font font-bold text-xl'>{player.name}</p>
 							<button
-								className='px-2 shadow-md absolute top-0 right-0 	bg-purple rounded-full text-white hover:bg-purpleDark'
+								className='px-2 shadow-md absolute top-[-10px] right-[-10px] 	bg-purple rounded-full text-white hover:bg-purpleDark'
 
 								onClick={() => deleteName(index)}>x
 							</button>
