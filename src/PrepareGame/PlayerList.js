@@ -14,7 +14,7 @@ function PlayerList() {
 
 	return (
 		<div
-			className='flex flex-col items-center w-fit lg:flex-rows gap-4'>
+			className='flex flex-col mx-10 gap-4 md:flex-row justify-center content-center '>
 
 			{
 				playerList.map((player, index) =>

@@ -9,9 +9,7 @@ function PrepareGame(props) {
 	return (
 		<div className=''>
 			{playerList.length < 5 ? <AddPlayer/> : null}
-			<div
-				// className='grid grid-rows-5 lg:grid-col-5 gap-4'
-			>
+			<div className=''>
 				<PlayerList/>
 			</div>
 

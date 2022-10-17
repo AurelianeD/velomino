@@ -26,6 +26,7 @@ function App() {
 						showContent ?
 							<>
 								<PrepareGame/>
+
 							</>
 							:
 							<>
@@ -33,21 +34,25 @@ function App() {
 							</>
 					}
 				</div>
-				<button
-					className='
-						fixed
+				<div className='
+					absolute
 						bottom-10
-						left-10
-						right-10
-						bg-purple
-						rounded-xl
-						text-white
-						py-2
-						px-2
-						hover:bg-purpleDark'
-					onClick={show}>
-					Commencer la partie
-				</button>
+						left-0
+						right-0
+						mx-auto
+						w-fit'>
+					<button
+						className='
+										bg-purple
+										rounded-full
+										text-white
+										py-2
+										px-2
+										hover:bg-purpleDark'
+						onClick={show}>
+						Commencer la partie
+					</button>
+				</div>
 			</PlayerListProvider>
 		</>
 	)
