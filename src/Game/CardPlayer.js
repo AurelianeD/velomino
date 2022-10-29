@@ -4,12 +4,15 @@ import {PlayerListContext} from "../provider/PlayerListProvider";
 function CardsPlayer(props) {
 	const {arrivedPlayers, setArrivedPlayers} = props.arrivedPlayers
 	const {playerList, setPlayerList} = useContext(PlayerListContext);
+	const {difficulty} = props.difficulty
+
 
 	//cette fonction ajoute l'index du joueur dans une liste par ordre d'arrivé
 	function FinalList(index) {
-		playerList[index].score += ((playerList.length - arrivedPlayers.length) * props.round.round)
-
 		setArrivedPlayers([...arrivedPlayers, playerList[index]])
+
+		playerList[index].score += ((playerList.length - arrivedPlayers.length) * difficulty)
+
 		setPlayerList(playerList)
 	}
 

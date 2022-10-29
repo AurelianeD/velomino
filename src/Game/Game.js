@@ -1,16 +1,20 @@
 import {useContext, useState} from "react";
 import {PlayerListContext} from "../provider/PlayerListProvider";
+import {GamePreferenceContext} from "../provider/GamePreferenceProvider";
 import CardsPlayer from "./CardPlayer";
 import ScoreTable from "./ScoreTable";
 
 function Game(props) {
 	const {playerList, setPlayerList} = useContext(PlayerListContext);
+	const {gamePreference} = useContext(GamePreferenceContext);
+
 	const [arrivedPlayers, setArrivedPlayers] = useState([]);
 	const [round, setRound] = useState(1);
 	const [count, setCount] = useState(0);
+	const [difficulty, setDifficulty] = useState(round);
 
 
-	if (count === 5) {
+	if (count === gamePreference.numberOfRound) {
 		playerList.sort((a, b) => b.score - a.score)
 		return (
 			<>
@@ -18,7 +22,7 @@ function Game(props) {
 					{playerList.map((player, index) => {
 							const hightScore = Math.max(...playerList.map(player => player.score));
 							return (
-								<div key={player.score}>
+								<div key={index}>
 									{hightScore === player.score ?
 										<div className="bg-white rounded-xl p-5 relative shadow-md">
 											<img src={require('../assets/crown.png')} alt="carrot"
@@ -71,11 +75,24 @@ function Game(props) {
 		<div>
 			<h2 className='text-purple'>Que la course commence !</h2>
 			<p className='text-sm text-black/50 italic mb-10'>Cliquez sur le nom du joueur qui a terminé la manche</p>
-			<CardsPlayer onClick={props.onClick} arrivedPlayers={{arrivedPlayers, setArrivedPlayers}}
-									 round={{round, setRound}}/>
+
+			<CardsPlayer onClick={props.onClick}
+									 arrivedPlayers={{arrivedPlayers, setArrivedPlayers}}
+									 round={{round, setRound}}
+									 difficulty={{difficulty, setDifficulty}}
+			/>
 			<p className='text-purple text-start ml-5 mb-10 font-bold'>{`Manche ${round} :`}</p>
-			<ScoreTable arrivedPlayers={{arrivedPlayers, setArrivedPlayers}} round={{round, setRound}}
-									count={{count, setCount}}/>
+			<p>Difficulté de la manche : {difficulty}</p>
+			<input
+				type='range'
+				min='1'
+				max='10'
+				defaultValue={round}
+				onChange={(e) => setDifficulty(parseInt(e.target.value))}/>
+			<ScoreTable arrivedPlayers={{arrivedPlayers, setArrivedPlayers}}
+									round={{round, setRound}}
+									count={{count, setCount}}
+			/>
 		</div>
 	)
 }
