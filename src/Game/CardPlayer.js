@@ -1,20 +1,22 @@
 import {useContext} from "react";
 import {PlayerListContext} from "../provider/PlayerListProvider";
+import {GameInformationsContext} from "../provider/GameInformationsProvider";
 
 function CardsPlayer(props) {
-	const {arrivedPlayers, setArrivedPlayers} = props.arrivedPlayers
+	const {arrivedPlayers, setArrivedPlayers} = useContext(GameInformationsContext);
 	const {playerList, setPlayerList} = useContext(PlayerListContext);
-	const {difficulty} = props.difficulty
+	const {difficulty} = useContext(GameInformationsContext)
 
 
 	//cette fonction ajoute l'index du joueur dans une liste par ordre d'arrivé
 	function FinalList(index) {
 		setArrivedPlayers([...arrivedPlayers, playerList[index]])
 
-		playerList[index].score += ((playerList.length - arrivedPlayers.length) * difficulty)
+		playerList[index].score += ((playerList.length - (arrivedPlayers.length + 1)) * difficulty)
 
 		setPlayerList(playerList)
 	}
+
 
 	return (
 		<div className='flex flex-row gap-4 justify-center content-center mb-10'>

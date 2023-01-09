@@ -1,17 +1,17 @@
 import {useContext, useEffect, useState} from "react";
 import {PlayerListContext} from "../provider/PlayerListProvider";
-import {GamePreferenceContext} from "../provider/GamePreferenceProvider";
+import {GameInformationsContext} from "../provider/GameInformationsProvider";
 import AddPlayer from "./AddPlayer";
 import PlayerList from "./PlayerList";
 
 function PrepareGame() {
-	const {playerList, setPlayerList} = useContext(PlayerListContext);
-	const {gamePreference, setGamePreference} = useContext(GamePreferenceContext);
+	const {playerList} = useContext(PlayerListContext);
+	const {setGamePreferences} = useContext(GameInformationsContext);
 	const [showContent, setShowContent] = useState(false);
 	const show = () => setShowContent(true);
 
 	useEffect(() => {
-		setGamePreference(
+		setGamePreferences(
 			{
 				numberOfRound: 3,
 			},
@@ -31,7 +31,7 @@ function PrepareGame() {
 						<p>Nombre de manches : </p>
 						<input type='number'
 									 placeholder='Nombre de manche'
-									 onChange={(e) => setGamePreference({numberOfRound: parseInt(e.target.value)})}/>
+									 onChange={(e) => setGamePreferences({numberOfRound: parseInt(e.target.value)})}/>
 					</div>
 					: null
 			}

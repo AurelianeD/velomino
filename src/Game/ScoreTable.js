@@ -1,18 +1,28 @@
 import {useContext} from "react";
 import {PlayerListContext} from "../provider/PlayerListProvider";
+import {GameInformationsContext} from "../provider/GameInformationsProvider";
 
-function ScoreTable(props) {
-	const {playerList, setPlayerList} = useContext(PlayerListContext);
-	const {arrivedPlayers, setArrivedPlayers} = props.arrivedPlayers;
-	const {round, setRound} = props.round;
-	const {count, setCount} = props.count;
+function ScoreTable() {
+	const {playerList} = useContext(PlayerListContext);
+	const {
+		arrivedPlayers,
+		setArrivedPlayers,
+		round,
+		setRound,
+		count,
+		setCount,
+		difficulty,
+		setDifficulty
+	} = useContext(GameInformationsContext);
+	
 
-
-	function incrementRound() {
+	function nextRound() {
 		setRound(round + 1)
 		setArrivedPlayers([])
 		setCount(count + 1)
+		setDifficulty(difficulty + 1)
 	}
+
 
 	return (
 		<>
@@ -40,7 +50,7 @@ function ScoreTable(props) {
 				}
 			</div>
 			<div className='my-10'>
-				<button onClick={incrementRound}
+				<button onClick={nextRound}
 								disabled={playerList.length !== arrivedPlayers.length}
 								className='bg-purple rounded-full text-white p-3 hover:bg-purpleDark'>
 					Terminer la manche
