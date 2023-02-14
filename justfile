@@ -3,3 +3,6 @@ build:
 
 push: build
   docker push registry.peauc.dev/aurelianed/velonimo
+
+start:
+	react-scripts start

@@ -16,10 +16,7 @@ function MainGame() {
 		setCount,
 		setDifficulty
 	} = useContext(GameInformationsContext);
-	// const {arrivedPlayer, setArrivedPlayer} = useContext(GameInformationsContext);
-	// const {round, setRound} = useContext(GameInformationsContext);
-	// const {count, setCount} = useContext(GameInformationsContext);
-	// const {difficulty, setDifficulty} = useContext(GameInformationsContext);
+	
 
 	const show = () => setShowContent(false);
 
