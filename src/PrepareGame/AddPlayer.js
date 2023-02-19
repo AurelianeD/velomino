@@ -8,7 +8,7 @@ function AddPlayer() {
 
 	const addPlayer = () => {
 		if (name !== "") {
-			setPlayerList((list) => [...list, {name, score: 0}])
+			setPlayerList((list) => [...list, {name, finalScore: 0}])
 			setName("")
 		}
 

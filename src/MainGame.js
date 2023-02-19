@@ -20,14 +20,18 @@ function MainGame() {
 	} = useContext(GameInformationsContext);
 
 	function setUpScoreTable(numberOfRound, playerList) {
-		const scoreTable = [];
+		let scoreTable = [];
+		const score = 0;
+		const playerListCopy = playerList.map(player => {
+			return {name: player.name, score}
+		});
 		for (let i = 0; i < numberOfRound; i++) {
-			scoreTable.push(playerList);
+			scoreTable.push(playerListCopy);
 		}
 		setScoreTable(scoreTable);
 	}
 
-	const show = () => {
+	const beginGame = () => {
 		if (playerList.length > 1) {
 			setShowContent(false);
 			setUpScoreTable(gamePreferences.numberOfRound, playerList);
@@ -49,7 +53,7 @@ function MainGame() {
 
 	return (
 			<>
-				<div className="static flex flex-col gap-4 bg-sand text-center max-w-full max-w-full pt-10 px-3">
+				<div className="static flex flex-col gap-4 bg-sand text-center max-w-full max-w-full py-10 px-3">
 					<div className='flex flex-row justify-center gap-4'>
 						<h1 className='font-bold text-5xl mb-10 text-center'>Vélonimo</h1>
 						<button onClick={resetGame}>Reset Game</button>
@@ -74,7 +78,7 @@ function MainGame() {
 										text-white
 										p-3
 										hover:bg-purpleDark'
-												onClick={show}>
+												onClick={beginGame}>
 											Commencer la partie
 										</button>
 									</div>
@@ -82,7 +86,7 @@ function MainGame() {
 								</>
 								:
 								<>
-									<Game onClick={show} setShowContent={setShowContent}/>
+									<Game setShowContent={setShowContent}/>
 								</>
 					}
 				</div>

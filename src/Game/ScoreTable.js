@@ -24,7 +24,7 @@ function ScoreTable() {
 		setDifficulty(difficulty + 1)
 	}
 
-
+	console.log(scoreTable)
 	return (
 			<>
 				<div className='flex flex-col gap-4 justify-center items-center md:flex-row'>
@@ -38,12 +38,12 @@ function ScoreTable() {
 													<img src={require("../assets/carrot.png")} alt="carrot"
 																		className="absolute top-[-15px] right-[-15px] w-10"/>
 													<p className="px-5 uppercase font font-bold text-xl">{player.name}</p>
-													<p className='text-xl text-purple'>Score : {player.score}</p>
+													<p className='text-xl text-purple'>Score : {player.finalScore}</p>
 												</div>
 												:
 												<div className="bg-white rounded-xl p-5 relative shadow-md">
 													<p className="px-5 uppercase font font-bold text-xl">{player.name}</p>
-													<p className='text-xl text-purple'>Score : {player.score}</p>
+													<p className='text-xl text-purple'>Score : {player.finalScore}</p>
 												</div>}
 									</div>
 							)
@@ -64,14 +64,10 @@ function ScoreTable() {
 							return (
 									<div>
 										<p>Manche {index + 1}</p>
-										{item.map((player, index) => {
-											return (
-													<div>
-														<p>Joueur : {player.name}</p>
-														<p>Score : {player.score}</p>
-													</div>
-											)
-										})}
+										<div className='border-b-2 border-b-black'>
+											<p>{item.name}</p>
+											<p>Score : {item.score}</p>
+										</div>
 									</div>
 							)
 						})}
