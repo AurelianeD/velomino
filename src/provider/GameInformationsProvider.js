@@ -10,22 +10,25 @@ function GameInformationsProvider({children}) {
 	const [round, setRound] = useLocalStorage(["round"], 1);
 	const [count, setCount] = useLocalStorage(["count"], 0);
 	const [difficulty, setDifficulty] = useLocalStorage(["difficulty"], round);
+	const [scoreTable, setScoreTable] = useLocalStorage(["scoreTable"], []);
 
 	return (
-		<GameInformationsContext.Provider value={{
-			gamePreferences,
-			setGamePreferences,
-			arrivedPlayers,
-			setArrivedPlayers,
-			round,
-			setRound,
-			count,
-			setCount,
-			difficulty,
-			setDifficulty
-		}}>
-			{children}
-		</GameInformationsContext.Provider>
+			<GameInformationsContext.Provider value={{
+				gamePreferences,
+				setGamePreferences,
+				arrivedPlayers,
+				setArrivedPlayers,
+				round,
+				setRound,
+				count,
+				setCount,
+				difficulty,
+				setDifficulty,
+				scoreTable,
+				setScoreTable
+			}}>
+				{children}
+			</GameInformationsContext.Provider>
 	)
 }
 

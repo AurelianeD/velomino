@@ -12,9 +12,10 @@ function ScoreTable() {
 		count,
 		setCount,
 		difficulty,
-		setDifficulty
+		setDifficulty,
+		scoreTable,
 	} = useContext(GameInformationsContext);
-	
+
 
 	function nextRound() {
 		setRound(round + 1)
@@ -25,38 +26,58 @@ function ScoreTable() {
 
 
 	return (
-		<>
-			<div className='flex flex-col gap-4 justify-center items-center md:flex-row'>
-				{
-					arrivedPlayers.map((player, index) => {
-						const firstArrivedPlayer = arrivedPlayers.indexOf(player) === 0;
-						return (
-							<div key={index}>
-								{firstArrivedPlayer ?
-									<div className="bg-white rounded-xl p-5 relative shadow-md">
-										<img src={require("../assets/carrot.png")} alt="carrot"
-												 className="absolute top-[-15px] right-[-15px] w-10"/>
-										<p className="px-5 uppercase font font-bold text-xl">{player.name}</p>
-										<p className='text-xl text-purple'>Score : {player.score}</p>
+			<>
+				<div className='flex flex-col gap-4 justify-center items-center md:flex-row'>
+					{
+						arrivedPlayers.map((player, index) => {
+							const firstArrivedPlayer = arrivedPlayers.indexOf(player) === 0;
+							return (
+									<div key={index}>
+										{firstArrivedPlayer ?
+												<div className="bg-white rounded-xl p-5 relative shadow-md">
+													<img src={require("../assets/carrot.png")} alt="carrot"
+																		className="absolute top-[-15px] right-[-15px] w-10"/>
+													<p className="px-5 uppercase font font-bold text-xl">{player.name}</p>
+													<p className='text-xl text-purple'>Score : {player.score}</p>
+												</div>
+												:
+												<div className="bg-white rounded-xl p-5 relative shadow-md">
+													<p className="px-5 uppercase font font-bold text-xl">{player.name}</p>
+													<p className='text-xl text-purple'>Score : {player.score}</p>
+												</div>}
 									</div>
-									:
-									<div className="bg-white rounded-xl p-5 relative shadow-md">
-										<p className="px-5 uppercase font font-bold text-xl">{player.name}</p>
-										<p className='text-xl text-purple'>Score : {player.score}</p>
-									</div>}
-							</div>
-						)
-					})
-				}
-			</div>
-			<div className='my-10'>
-				<button onClick={nextRound}
-								disabled={playerList.length !== arrivedPlayers.length}
-								className='bg-purple rounded-full text-white p-3 hover:bg-purpleDark'>
-					Terminer la manche
-				</button>
-			</div>
-		</>
+							)
+						})
+					}
+				</div>
+				<div className='my-10'>
+					<button onClick={nextRound}
+													disabled={playerList.length !== arrivedPlayers.length}
+													className='bg-purple rounded-full text-white p-3 hover:bg-purpleDark'>
+						Terminer la manche
+					</button>
+				</div>
+				<div>
+					<p>Tableaux des scores</p>
+					<div className='flex flex-row justify-around'>
+						{scoreTable.map((item, index) => {
+							return (
+									<div>
+										<p>Manche {index + 1}</p>
+										{item.map((player, index) => {
+											return (
+													<div>
+														<p>Joueur : {player.name}</p>
+														<p>Score : {player.score}</p>
+													</div>
+											)
+										})}
+									</div>
+							)
+						})}
+					</div>
+				</div>
+			</>
 	)
 }
 
